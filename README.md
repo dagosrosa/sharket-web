@@ -46,8 +46,8 @@ docker-compose.prod.yml
 
 | Camada | Tecnologia |
 |--------|------------|
-| Framework | Angular 19 |
-| UI | Angular Material 19 |
+| Framework | Angular 22 |
+| UI | Angular Material 22 |
 | Estado | Angular Signals + Services |
 | HTTP | HttpClient + interceptors |
 | Autenticação | JWT (via iam-service do backend) |
@@ -61,8 +61,8 @@ docker-compose.prod.yml
 
 ## Pré-requisitos
 
-- Node.js 20+
-- Angular CLI 19+: `npm install -g @angular/cli`
+- Node.js 22.22.3+ (use `.nvmrc` com NVM: `nvm use`)
+- Angular CLI 22+: `npm install -g @angular/cli@22`
 - Backend Sharket rodando localmente (ver repositório `sharket`)
 
 ---
@@ -173,7 +173,7 @@ feat(seller): implementar listagem de pedidos com paginação
 fix(checkout): corrigir cálculo de frete no resumo do pedido
 refactor(auth): extrair decode de JWT para função pura na lib models
 test(seller): adicionar testes unitários para PedidosStore
-chore(web): atualizar Angular para 19.3
+chore(web): upgrade Angular 22, Node 22.22.3
 chore(infra): configurar headers CSP no nginx do checkout
 ci: adicionar job de lint no workflow de CI
 ```
