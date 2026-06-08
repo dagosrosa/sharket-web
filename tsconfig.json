@@ -8,18 +8,10 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "paths": {
-      "api": [
-        "./dist/api"
-      ],
-      "auth": [
-        "./dist/auth"
-      ],
-      "models": [
-        "./dist/models"
-      ],
-      "ui": [
-        "./dist/ui"
-      ]
+      "models": ["./projects/models/src/public-api"],
+      "auth": ["./projects/auth/src/public-api"],
+      "api": ["./projects/api/src/public-api"],
+      "ui": ["./projects/ui/src/public-api"]
     },
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,

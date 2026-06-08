@@ -1,6 +1,6 @@
-/*
- * Public API Surface of api
- */
-
-export * from './lib/api.service';
-export * from './lib/api.component';
+export * from './lib/api.config';
+export * from './lib/iam.service';
+export * from './lib/catalog.service';
+export * from './lib/commerce.service';
+export * from './lib/financial.service';
+export * from './lib/subscription.service';
