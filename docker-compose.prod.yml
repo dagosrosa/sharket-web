@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  seller:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-sharket}/sharket-seller:latest
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.seller
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  buyer:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-sharket}/sharket-buyer:latest
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.buyer
+    ports:
+      - "4201:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  checkout:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-sharket}/sharket-checkout:latest
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.checkout
+    ports:
+      - "4202:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  admin:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-sharket}/sharket-admin:latest
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.admin
+    ports:
+      - "4203:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
