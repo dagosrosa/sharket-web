@@ -1,0 +1,29 @@
+.sidenav-container { height: 100%; }
+
+.sidenav {
+  width: 240px;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+
+  .brand {
+    padding: 20px 16px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--mat-sys-primary);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.active-link {
+  background: var(--mat-sys-secondary-container);
+  border-radius: 28px;
+  mat-icon { color: var(--mat-sys-on-secondary-container); }
+  span { color: var(--mat-sys-on-secondary-container); font-weight: 500; }
+}
+
+mat-toolbar {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  .toolbar-spacer { flex: 1; }
+  .user-name { font-size: 0.875rem; margin-right: 8px; }
+}
+
+.content { padding: 24px; }
