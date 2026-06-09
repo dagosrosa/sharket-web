@@ -29,7 +29,7 @@ App Angular para operadores internos gerenciarem planos, feature flags e aplicat
 ## Desenvolvimento
 
 ```bash
-# na raiz do workspace (C:\KINGFY\web)
+# na raiz do workspace (C:\SHARKET\web)
 $env:PATH = "C:\Users\dagos.rosa\AppData\Roaming\nvm\v22.22.3;$env:PATH"
 ng serve admin --port=4203
 ```

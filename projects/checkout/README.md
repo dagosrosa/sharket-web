@@ -29,7 +29,7 @@ App Angular público para o fluxo de pagamento. Acessado pelo link de venda do p
 ## Desenvolvimento
 
 ```bash
-# na raiz do workspace (C:\KINGFY\web)
+# na raiz do workspace (C:\SHARKET\web)
 $env:PATH = "C:\Users\dagos.rosa\AppData\Roaming\nvm\v22.22.3;$env:PATH"
 ng serve checkout --port=4202
 ```

@@ -18,7 +18,7 @@ App Angular para produtores e vendedores gerenciarem sua operação na plataform
 ## Desenvolvimento
 
 ```bash
-# na raiz do workspace (C:\KINGFY\web)
+# na raiz do workspace (C:\SHARKET\web)
 $env:PATH = "C:\Users\dagos.rosa\AppData\Roaming\nvm\v22.22.3;$env:PATH"
 ng serve seller --port=4200
 ```
