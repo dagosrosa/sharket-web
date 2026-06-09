@@ -8,7 +8,7 @@ import { SHARKET_API_CONFIG } from './api.config';
 export class FinancialService {
   private http = inject(HttpClient);
   private config = inject(SHARKET_API_CONFIG);
-  private base = () => `${this.config.financialUrl}/api/v1`;
+  private base = () => `${this.config.financialUrl}/api/v1/financeiro`;
 
   saldo(contaId: string): Observable<ApiResponse<Saldo>> {
     return this.http.get<ApiResponse<Saldo>>(`${this.base()}/saldo`, {
