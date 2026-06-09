@@ -1,0 +1,26 @@
+import { Injectable, signal } from '@angular/core';
+import { Produto } from 'models';
+
+export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO';
+
+export interface DadosComprador {
+  nome: string;
+  email: string;
+  cpf: string;
+}
+
+export interface DadosCartao {
+  numero: string;
+  nomeTitular: string;
+  validade: string;
+  cvv: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class CheckoutStateService {
+  produto = signal<Produto | null>(null);
+  contaId = signal<string>('');
+  dadosComprador = signal<DadosComprador | null>(null);
+  metodoPagamento = signal<MetodoPagamento>('PIX');
+  dadosCartao = signal<DadosCartao | null>(null);
+}

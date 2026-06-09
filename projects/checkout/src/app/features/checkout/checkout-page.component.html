@@ -1,0 +1,119 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <span class="brand">Sharket</span>
+    @if (state.produto(); as p) {
+      <span class="produto-nome">{{ p.nome }}</span>
+      <span class="produto-preco">{{ p.preco | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    }
+  </div>
+
+  <mat-stepper orientation="vertical" linear class="stepper">
+
+    <!-- Step 1: Dados pessoais -->
+    <mat-step [stepControl]="dadosForm" label="Seus dados">
+      <form [formGroup]="dadosForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome completo</mat-label>
+          <input matInput formControlName="nome" autocomplete="name" />
+          @if (dadosForm.controls.nome.invalid && dadosForm.controls.nome.touched) {
+            <mat-error>Nome obrigatório (mín. 3 caracteres)</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" autocomplete="email" />
+          @if (dadosForm.controls.email.hasError('required') && dadosForm.controls.email.touched) {
+            <mat-error>Email obrigatório</mat-error>
+          } @else if (dadosForm.controls.email.hasError('email')) {
+            <mat-error>Email inválido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>CPF</mat-label>
+          <input matInput formControlName="cpf" placeholder="000.000.000-00" />
+          @if (dadosForm.controls.cpf.invalid && dadosForm.controls.cpf.touched) {
+            <mat-error>CPF inválido (formato: 000.000.000-00)</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="step-actions">
+          <button mat-flat-button matStepperNext [disabled]="dadosForm.invalid">Continuar</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Pagamento -->
+    <mat-step [stepControl]="pagamentoForm" label="Forma de pagamento">
+      <form [formGroup]="pagamentoForm">
+        <mat-radio-group formControlName="metodo" class="metodos">
+          <mat-radio-button value="PIX">
+            <span class="metodo-label"><mat-icon>qr_code_2</mat-icon> PIX — aprovação imediata</span>
+          </mat-radio-button>
+          <mat-radio-button value="BOLETO">
+            <span class="metodo-label"><mat-icon>receipt</mat-icon> Boleto — prazo de 3 dias úteis</span>
+          </mat-radio-button>
+          <mat-radio-button value="CARTAO_CREDITO">
+            <span class="metodo-label"><mat-icon>credit_card</mat-icon> Cartão de crédito</span>
+          </mat-radio-button>
+        </mat-radio-group>
+
+        @if (metodo === 'CARTAO_CREDITO') {
+          <div class="card-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Número do cartão</mat-label>
+              <input matInput formControlName="numeroCartao" placeholder="0000 0000 0000 0000" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Nome no cartão</mat-label>
+              <input matInput formControlName="nomeTitular" />
+            </mat-form-field>
+            <div class="card-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Validade</mat-label>
+                <input matInput formControlName="validade" placeholder="MM/AA" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>CVV</mat-label>
+                <input matInput formControlName="cvv" maxlength="4" />
+              </mat-form-field>
+            </div>
+          </div>
+        }
+
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>Voltar</button>
+          <button mat-flat-button matStepperNext>Revisar pedido</button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Confirmação -->
+    <mat-step label="Confirmar pedido">
+      @if (state.produto(); as p) {
+        <mat-card class="resumo-card">
+          <mat-card-content>
+            <div class="resumo-row">
+              <span>Produto</span><span>{{ p.nome }}</span>
+            </div>
+            <div class="resumo-row">
+              <span>Valor</span><span class="preco">{{ p.preco | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+            </div>
+            <div class="resumo-row">
+              <span>Pagamento</span><span>{{ metodo | titlecase }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <div class="step-actions">
+        <button mat-stroked-button matStepperPrevious>Voltar</button>
+        <button mat-flat-button (click)="confirmar()" [disabled]="loading()">
+          {{ loading() ? 'Processando...' : 'Confirmar compra' }}
+        </button>
+      </div>
+    </mat-step>
+
+  </mat-stepper>
+</div>

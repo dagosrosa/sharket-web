@@ -4,3 +4,6 @@ export * from './lib/produto.model';
 export * from './lib/pedido.model';
 export * from './lib/financeiro.model';
 export * from './lib/assinatura.model';
+export * from './lib/plano.model';
+export * from './lib/feature-flag.model';
+export * from './lib/oauth-app.model';

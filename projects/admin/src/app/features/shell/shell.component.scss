@@ -1,0 +1,50 @@
+.container { height: 100vh; }
+
+.sidenav {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  .brand { font-size: 1.25rem; font-weight: 700; color: var(--mat-sys-primary); }
+  .admin-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+}
+
+mat-nav-list { flex: 1; padding-top: 8px; }
+
+.active-link {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  border-radius: 28px;
+  margin: 0 8px;
+}
+
+.sidenav-footer {
+  padding: 8px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  button { width: 100%; justify-content: flex-start; gap: 8px; }
+}
+
+.toolbar {
+  background: var(--mat-sys-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  .spacer { flex: 1; }
+  .user-info { font-size: 0.875rem; color: var(--mat-sys-on-surface-variant); }
+}
+
+.content { padding: 24px; }

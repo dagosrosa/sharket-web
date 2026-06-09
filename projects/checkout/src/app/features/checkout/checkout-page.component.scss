@@ -1,0 +1,50 @@
+.checkout-container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  min-height: 100vh;
+}
+
+.checkout-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 32px;
+
+  .brand { font-size: 1.25rem; font-weight: 700; color: var(--mat-sys-primary); }
+  .produto-nome { color: var(--mat-sys-on-surface-variant); flex: 1; }
+  .produto-preco { font-size: 1.125rem; font-weight: 600; color: var(--mat-sys-on-surface); }
+}
+
+.stepper { background: transparent; }
+
+mat-form-field { width: 100%; margin-bottom: 4px; }
+
+.metodos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .metodo-label { display: flex; align-items: center; gap: 8px; mat-icon { font-size: 1.1rem; } }
+}
+
+.card-fields { margin-top: 8px; }
+.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.step-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+.resumo-card { margin-bottom: 16px; }
+.resumo-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  &:last-child { border: none; }
+  .preco { font-weight: 600; color: var(--mat-sys-primary); }
+}
