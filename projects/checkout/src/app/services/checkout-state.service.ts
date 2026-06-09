@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Produto } from 'models';
+import { PagamentoResultado, Produto } from 'models';
 
 export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO';
 
@@ -23,4 +23,5 @@ export class CheckoutStateService {
   dadosComprador = signal<DadosComprador | null>(null);
   metodoPagamento = signal<MetodoPagamento>('PIX');
   dadosCartao = signal<DadosCartao | null>(null);
+  pagamentoResultado = signal<PagamentoResultado | null>(null);
 }

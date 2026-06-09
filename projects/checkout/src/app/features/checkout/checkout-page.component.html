@@ -107,10 +107,18 @@
         </mat-card>
       }
 
+      @if (erro()) {
+        <p class="erro-msg">{{ erro() }}</p>
+      }
+
       <div class="step-actions">
-        <button mat-stroked-button matStepperPrevious>Voltar</button>
+        <button mat-stroked-button matStepperPrevious [disabled]="loading()">Voltar</button>
         <button mat-flat-button (click)="confirmar()" [disabled]="loading()">
-          {{ loading() ? 'Processando...' : 'Confirmar compra' }}
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Confirmar compra
+          }
         </button>
       </div>
     </mat-step>

@@ -8,6 +8,7 @@ export const environment = {
     catalogUrl: GATEWAY,
     commerceUrl: GATEWAY,
     financialUrl: GATEWAY,
+    paymentUrl: GATEWAY,
     subscriptionUrl: GATEWAY,
   },
 };

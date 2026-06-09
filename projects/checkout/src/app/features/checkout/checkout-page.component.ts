@@ -8,7 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyPipe, TitleCasePipe } from '@angular/common';
+import { switchMap } from 'rxjs';
+import { CommerceService, PaymentService } from 'api';
 import { CheckoutStateService, MetodoPagamento } from '../../services/checkout-state.service';
 
 @Component({
@@ -22,6 +25,7 @@ import { CheckoutStateService, MetodoPagamento } from '../../services/checkout-s
     MatRadioModule,
     MatCardModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     CurrencyPipe,
     TitleCasePipe,
   ],
@@ -31,6 +35,8 @@ import { CheckoutStateService, MetodoPagamento } from '../../services/checkout-s
 export class CheckoutPageComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private commerce = inject(CommerceService);
+  private payment = inject(PaymentService);
   state = inject(CheckoutStateService);
 
   dadosForm = this.fb.nonNullable.group({
@@ -48,6 +54,7 @@ export class CheckoutPageComponent implements OnInit {
   });
 
   loading = signal(false);
+  erro = signal('');
 
   get metodo() {
     return this.pagamentoForm.controls.metodo.value;
@@ -61,14 +68,45 @@ export class CheckoutPageComponent implements OnInit {
 
   confirmar(): void {
     if (this.dadosForm.invalid || this.pagamentoForm.invalid) return;
+
     this.loading.set(true);
+    this.erro.set('');
 
     const { nome, email, cpf } = this.dadosForm.getRawValue();
-    this.state.dadosComprador.set({ nome, email, cpf });
-    this.state.metodoPagamento.set(this.metodo);
+    const { metodo } = this.pagamentoForm.getRawValue();
 
-    setTimeout(() => {
-      this.router.navigate(['/sucesso']);
-    }, 1500);
+    this.state.dadosComprador.set({ nome, email, cpf });
+    this.state.metodoPagamento.set(metodo);
+
+    const produto = this.state.produto()!;
+    const contaId = this.state.contaId();
+
+    this.commerce.criar({
+      produtoId: produto.id,
+      clienteNome: nome,
+      clienteEmail: email,
+      clienteDocumento: cpf,
+      metodo,
+      valor: produto.preco,
+      parcelas: 1,
+    }, contaId).pipe(
+      switchMap(pedidoRes => this.payment.processar({
+        pedidoId: pedidoRes.data.pedidoId,
+        gateway: 'GETNET',
+        metodo,
+        valor: produto.preco,
+        parcelas: 1,
+      }, contaId))
+    ).subscribe({
+      next: pagamentoRes => {
+        this.state.pagamentoResultado.set(pagamentoRes.data);
+        this.loading.set(false);
+        this.router.navigate(['/sucesso']);
+      },
+      error: () => {
+        this.erro.set('Nao foi possivel processar o pagamento. Tente novamente.');
+        this.loading.set(false);
+      },
+    });
   }
 }

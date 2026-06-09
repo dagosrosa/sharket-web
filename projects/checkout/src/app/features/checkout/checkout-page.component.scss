@@ -39,6 +39,8 @@ mat-form-field { width: 100%; margin-bottom: 4px; }
   justify-content: flex-end;
 }
 
+.erro-msg { color: var(--mat-sys-error); font-size: 0.875rem; margin: 8px 0; }
+
 .resumo-card { margin-bottom: 16px; }
 .resumo-row {
   display: flex;

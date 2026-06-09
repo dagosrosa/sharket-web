@@ -5,3 +5,4 @@ export * from './lib/commerce.service';
 export * from './lib/financial.service';
 export * from './lib/subscription.service';
 export * from './lib/platform.service';
+export * from './lib/payment.service';
