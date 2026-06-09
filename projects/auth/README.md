@@ -1,63 +1,57 @@
-# Auth
+# @sharket/auth
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+Biblioteca de autenticação compartilhada entre todos os apps. Gerencia sessão JWT via Angular Signals e localStorage.
 
-## Code scaffolding
+## Exports
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+| Símbolo | Tipo | Descrição |
+|---------|------|-----------|
+| `AuthService` | Service | Sessão do usuário (token + user como Signals) |
+| `authGuard` | `CanActivateFn` | Bloqueia rotas não autenticadas, redireciona para `/login` |
+| `jwtInterceptor` | `HttpInterceptorFn` | Injeta `Authorization: Bearer <token>` em todas as requisições |
 
-```bash
-ng generate component component-name
+## Uso
+
+### Registrar no app
+
+```typescript
+// app.config.ts
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { jwtInterceptor } from 'auth';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient(withInterceptors([jwtInterceptor])),
+  ],
+};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Proteger rotas
 
-```bash
-ng generate --help
+```typescript
+// app.routes.ts
+import { authGuard } from 'auth';
+
+{ path: 'app', canActivate: [authGuard], ... }
 ```
 
-## Building
+### Usar no componente
 
-To build the library, run:
+```typescript
+import { AuthService } from 'auth';
 
-```bash
-ng build auth
+export class ShellComponent {
+  auth = inject(AuthService);
+  // auth.user()            → Usuario | null (Signal)
+  // auth.isAuthenticated() → boolean (computed Signal)
+  // auth.token()           → string | null (Signal)
+  // auth.logout()          → limpa sessão e navega para /login
+}
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+## Armazenamento
 
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/auth
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Chave | Conteúdo |
+|-------|----------|
+| `sharket_token` | JWT string |
+| `sharket_user` | JSON do objeto `Usuario` |
