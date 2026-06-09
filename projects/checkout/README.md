@@ -4,23 +4,27 @@ App Angular público para o fluxo de pagamento. Acessado pelo link de venda do p
 
 **URL produção:** `pay.sharket.com` | **Porta dev:** `4202`
 
-## Funcionalidades planejadas
+---
+
+## Funcionalidades
 
 | Feature | Rota | Descrição |
 |---------|------|-----------|
-| Página do produto | `/:produtoId` | Apresentação do produto com CTA de compra |
-| Dados pessoais | `/:produtoId/dados` | Nome, email, CPF do comprador |
-| Pagamento | `/:produtoId/pagamento` | Cartão de crédito, PIX ou boleto |
-| Confirmação | `/:produtoId/confirmacao` | Resumo e confirmação do pedido |
-| Sucesso | `/sucesso` | Pedido confirmado, instruções de acesso |
-| Erro | `/erro` | Pagamento recusado, opções de retry |
+| Página do produto | `/loja/:contaId/:produtoId` | Produto com descrição, preço e CTA "Comprar agora" |
+| Checkout (3 etapas) | `/checkout/:contaId/:produtoId` | MatStepper: dados pessoais → forma de pagamento → confirmação |
+| Sucesso | `/sucesso` | Confirmação com dados do pedido e método escolhido |
+| Erro | `/erro` | Pagamento recusado, botão para tentar novamente |
 
-## Características especiais
+---
 
-- **Público** — não exige autenticação do comprador
-- **Otimizado para conversão** — sem distrações, foco no funil
-- **CSP restrita** — nginx com `X-Frame-Options: DENY` (não pode ser iframeado)
-- **Sem sidenav** — layout linear passo a passo
+## Arquitetura
+
+- **Público** — sem `jwtInterceptor`, sem `authGuard`
+- **`CheckoutStateService`** — estado compartilhado entre rotas via Angular Signals (`produto`, `contaId`, `dadosComprador`, `metodoPagamento`)
+- **Formas de pagamento:** PIX (aprovação imediata), Boleto (3 dias úteis), Cartão de crédito (com campos condicionais)
+- **`contaId`** do vendedor embutido na URL — o checkout sabe de qual conta está vendendo
+
+---
 
 ## Desenvolvimento
 
@@ -30,12 +34,19 @@ $env:PATH = "C:\Users\dagos.rosa\AppData\Roaming\nvm\v22.22.3;$env:PATH"
 ng serve checkout --port=4202
 ```
 
+Acesse: `http://localhost:4202/loja/{contaId}/{produtoId}`
+
+---
+
 ## Build de produção
 
 ```bash
 ng build checkout --configuration production
 # artefatos em dist/checkout/browser/
+# production usa environment.prod.ts → https://api.sharket.com (gateway)
 ```
+
+---
 
 ## Docker
 
@@ -44,7 +55,10 @@ docker build -f infra/docker/Dockerfile.checkout -t sharket/checkout .
 docker run -p 4202:80 sharket/checkout
 ```
 
+---
+
 ## Dependências de libs
 
-- `models` — interfaces de domínio
-- `api` — `CatalogService` (produto), `IamService` (criar conta buyer no checkout)
+- `models` — `Produto`, `ApiResponse`, `Page`
+- `api` — `CatalogService` (carregar produto), `SHARKET_API_CONFIG`
+- Environments: `environment.ts` (dev, portas individuais) / `environment.prod.ts` (prod, gateway)
