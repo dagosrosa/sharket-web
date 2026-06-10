@@ -2,7 +2,7 @@ const GATEWAY = 'https://api.sharket.com';
 
 export const environment = {
   production: true,
-  // Prod: todos os serviços via API Gateway
+  checkoutUrl: 'https://checkout.sharket.com',
   api: {
     iamUrl: GATEWAY,
     catalogUrl: GATEWAY,

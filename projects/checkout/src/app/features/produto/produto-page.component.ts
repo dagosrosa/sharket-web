@@ -67,7 +67,7 @@ export class ProdutoPageComponent implements OnInit {
 
     this.catalog.listar(this.contaId).subscribe({
       next: res => {
-        const found = res.data.content.find(p => p.id === this.produtoId) ?? null;
+        const found = res.data.find(p => p.id === this.produtoId) ?? null;
         this.produto.set(found);
         if (found) this.state.produto.set(found);
         this.loading.set(false);
