@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Pedido, MetodoPagamento, StatusPedido } from 'models';
 
 const STATUS_CONFIG: Record<StatusPedido, { label: string; css: string }> = {
@@ -24,7 +24,7 @@ const METODO_LABEL: Record<MetodoPagamento, string> = {
 
 @Component({
   selector: 'app-pedido-detalhe-dialog',
-  imports: [MatDialogModule, MatButtonModule, MatChipsModule, MatIconModule, CurrencyPipe, DatePipe, SlicePipe],
+  imports: [MatDialogModule, MatButtonModule, MatChipsModule, MatIconModule, CurrencyPipe, DatePipe],
   template: `
     <h2 mat-dialog-title>Detalhes do Pedido</h2>
 

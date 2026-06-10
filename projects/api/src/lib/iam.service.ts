@@ -15,4 +15,18 @@ export class IamService {
       req
     );
   }
+
+  recuperarSenha(email: string): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(
+      `${this.config.iamUrl}/api/v1/auth/recuperar`,
+      { email }
+    );
+  }
+
+  redefinirSenha(token: string, novaSenha: string): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(
+      `${this.config.iamUrl}/api/v1/auth/redefinir`,
+      { token, novaSenha }
+    );
+  }
 }

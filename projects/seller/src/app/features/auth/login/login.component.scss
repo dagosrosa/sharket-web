@@ -35,3 +35,13 @@
   font-size: 0.875rem;
   margin: 0;
 }
+
+.forgot-link {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}

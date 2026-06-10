@@ -9,6 +9,16 @@ export const routes: Routes = [
       import('./features/auth/login/login.component').then(m => m.LoginComponent),
   },
   {
+    path: 'recuperar-senha',
+    loadComponent: () =>
+      import('./features/auth/recuperar-senha/recuperar-senha.component').then(m => m.RecuperarSenhaComponent),
+  },
+  {
+    path: 'redefinir-senha',
+    loadComponent: () =>
+      import('./features/auth/redefinir-senha/redefinir-senha.component').then(m => m.RedefinirSenhaComponent),
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import('./features/shell/shell.component').then(m => m.ShellComponent),
