@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
 import { CheckoutStateService } from '../../services/checkout-state.service';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-sucesso',
@@ -31,24 +32,37 @@ import { CheckoutStateService } from '../../services/checkout-state.service';
 
           @if (pag.pixQrCode) {
             <div class="pix-box">
-              <mat-icon>qr_code_2</mat-icon>
-              <p class="pix-titulo">Pague pelo PIX</p>
-              <p class="pix-instrucao">Copie o codigo abaixo e cole no app do seu banco:</p>
+              <p class="pix-titulo">
+                <mat-icon>pix</mat-icon>
+                Pague com PIX
+              </p>
+
+              @if (qrDataUrl()) {
+                <div class="qr-wrapper">
+                  <img [src]="qrDataUrl()" alt="QR Code PIX" class="qr-img" />
+                </div>
+              }
+
+              <p class="pix-instrucao">Ou copie o codigo PIX Copia e Cola:</p>
               <div class="pix-codigo">{{ pag.pixQrCode }}</div>
-              <button mat-stroked-button (click)="copiarPix(pag.pixQrCode!)">
-                <mat-icon>content_copy</mat-icon> Copiar codigo PIX
+              <button mat-stroked-button (click)="copiar(pag.pixQrCode!, 'pix')">
+                <mat-icon>{{ copiado() === 'pix' ? 'check' : 'content_copy' }}</mat-icon>
+                {{ copiado() === 'pix' ? 'Copiado!' : 'Copiar codigo PIX' }}
               </button>
             </div>
           }
 
           @if (pag.boletoLinhaDigitavel) {
             <div class="boleto-box">
-              <mat-icon>receipt</mat-icon>
-              <p class="boleto-titulo">Boleto gerado</p>
+              <p class="boleto-titulo">
+                <mat-icon>receipt</mat-icon>
+                Boleto gerado
+              </p>
               <p class="boleto-instrucao">Linha digitavel:</p>
               <div class="boleto-codigo">{{ pag.boletoLinhaDigitavel }}</div>
-              <button mat-stroked-button (click)="copiarBoleto(pag.boletoLinhaDigitavel!)">
-                <mat-icon>content_copy</mat-icon> Copiar linha digitavel
+              <button mat-stroked-button (click)="copiar(pag.boletoLinhaDigitavel!, 'boleto')">
+                <mat-icon>{{ copiado() === 'boleto' ? 'check' : 'content_copy' }}</mat-icon>
+                {{ copiado() === 'boleto' ? 'Copiado!' : 'Copiar linha digitavel' }}
               </button>
             </div>
           }
@@ -80,25 +94,45 @@ import { CheckoutStateService } from '../../services/checkout-state.service';
     .pix-box, .boleto-box {
       margin-top: 24px; padding: 20px; border-radius: 12px;
       background: var(--mat-sys-surface-container); text-align: left;
-      mat-icon { font-size: 2rem; width: 2rem; height: 2rem; color: var(--mat-sys-primary); }
     }
-    .pix-titulo, .boleto-titulo { font-weight: 600; font-size: 1.1rem; margin: 8px 0 4px; color: var(--mat-sys-on-surface); }
-    .pix-instrucao, .boleto-instrucao { font-size: 0.875rem; margin-bottom: 12px; }
+    .pix-titulo, .boleto-titulo {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 600; font-size: 1.1rem; margin: 0 0 16px;
+      color: var(--mat-sys-on-surface);
+      mat-icon { color: var(--mat-sys-primary); }
+    }
+    .qr-wrapper {
+      display: flex; justify-content: center; margin-bottom: 16px;
+    }
+    .qr-img {
+      width: 220px; height: 220px; border-radius: 8px;
+      border: 1px solid var(--mat-sys-outline-variant);
+      background: #fff;
+    }
+    .pix-instrucao, .boleto-instrucao { font-size: 0.875rem; margin-bottom: 8px; }
     .pix-codigo, .boleto-codigo {
-      font-family: monospace; font-size: 0.8rem; word-break: break-all;
+      font-family: monospace; font-size: 0.75rem; word-break: break-all;
       background: var(--mat-sys-surface-container-highest); padding: 12px; border-radius: 8px;
       margin-bottom: 12px; color: var(--mat-sys-on-surface);
     }
   `],
 })
-export class SucessoComponent {
-  state = inject(CheckoutStateService);
+export class SucessoComponent implements OnInit {
+  state    = inject(CheckoutStateService);
+  qrDataUrl = signal('');
+  copiado   = signal('');
 
-  copiarPix(codigo: string): void {
-    navigator.clipboard.writeText(codigo);
+  ngOnInit(): void {
+    const pag = this.state.pagamentoResultado();
+    if (pag?.pixQrCode) {
+      QRCode.toDataURL(pag.pixQrCode, { width: 220, margin: 1, color: { dark: '#000000', light: '#ffffff' } })
+        .then(url => this.qrDataUrl.set(url));
+    }
   }
 
-  copiarBoleto(codigo: string): void {
+  copiar(codigo: string, tipo: string): void {
     navigator.clipboard.writeText(codigo);
+    this.copiado.set(tipo);
+    setTimeout(() => this.copiado.set(''), 2000);
   }
 }
