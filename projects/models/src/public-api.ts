@@ -8,3 +8,4 @@ export * from './lib/plano.model';
 export * from './lib/feature-flag.model';
 export * from './lib/oauth-app.model';
 export * from './lib/relatorio.model';
+export * from './lib/oferta.model';

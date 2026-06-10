@@ -82,6 +82,7 @@ export class CheckoutPageComponent implements OnInit {
     const contaId = this.state.contaId();
 
     this.commerce.criar({
+      ofertaId: this.state.ofertaId() ?? undefined,
       produtoId: produto.id,
       clienteNome: nome,
       clienteEmail: email,

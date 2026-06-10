@@ -13,6 +13,16 @@ export const routes: Routes = [
       import('./features/checkout/checkout-page.component').then(m => m.CheckoutPageComponent),
   },
   {
+    path: 'oferta/:ofertaId',
+    loadComponent: () =>
+      import('./features/oferta/oferta-page.component').then(m => m.OfertaPageComponent),
+  },
+  {
+    path: 'checkout-oferta',
+    loadComponent: () =>
+      import('./features/checkout/checkout-page.component').then(m => m.CheckoutPageComponent),
+  },
+  {
     path: 'sucesso',
     loadComponent: () =>
       import('./features/sucesso/sucesso.component').then(m => m.SucessoComponent),

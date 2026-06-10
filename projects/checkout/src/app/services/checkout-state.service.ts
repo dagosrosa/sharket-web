@@ -20,6 +20,7 @@ export interface DadosCartao {
 export class CheckoutStateService {
   produto = signal<Produto | null>(null);
   contaId = signal<string>('');
+  ofertaId = signal<string | null>(null);
   dadosComprador = signal<DadosComprador | null>(null);
   metodoPagamento = signal<MetodoPagamento>('PIX');
   dadosCartao = signal<DadosCartao | null>(null);
