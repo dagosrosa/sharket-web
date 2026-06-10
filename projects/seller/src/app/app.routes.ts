@@ -50,6 +50,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/assinaturas/assinaturas.component').then(m => m.AssinaturasComponent),
       },
+      {
+        path: 'relatorios',
+        loadComponent: () =>
+          import('./features/relatorios/relatorios.component').then(m => m.RelatoriosComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'app/dashboard' },

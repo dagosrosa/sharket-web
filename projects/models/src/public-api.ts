@@ -7,3 +7,4 @@ export * from './lib/assinatura.model';
 export * from './lib/plano.model';
 export * from './lib/feature-flag.model';
 export * from './lib/oauth-app.model';
+export * from './lib/relatorio.model';

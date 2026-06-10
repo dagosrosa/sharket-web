@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse, Pedido, PedidoCriadoResultado, RealizarPedidoRequest, StatusPedido } from 'models';
+import { ApiResponse, Pedido, PedidoCriadoResultado, RealizarPedidoRequest, ResumoRelatorio, StatusPedido, VendaDiaria } from 'models';
 import { SHARKET_API_CONFIG } from './api.config';
 
 @Injectable({ providedIn: 'root' })
@@ -29,5 +29,19 @@ export class CommerceService {
     return this.http.post<ApiResponse<PedidoCriadoResultado>>(this.base(), req, {
       headers: { 'X-Conta-Id': contaId },
     });
+  }
+
+  relatorioResumo(contaId: string): Observable<ApiResponse<ResumoRelatorio>> {
+    return this.http.get<ApiResponse<ResumoRelatorio>>(
+      `${this.config.commerceUrl}/api/v1/relatorios/resumo`,
+      { headers: { 'X-Conta-Id': contaId } }
+    );
+  }
+
+  relatorioVendasDiarias(contaId: string, dias = 30): Observable<ApiResponse<VendaDiaria[]>> {
+    return this.http.get<ApiResponse<VendaDiaria[]>>(
+      `${this.config.commerceUrl}/api/v1/relatorios/vendas-diarias`,
+      { headers: { 'X-Conta-Id': contaId }, params: { dias } }
+    );
   }
 }
