@@ -1,15 +1,33 @@
 export type StatusPedido =
   | 'PENDENTE'
-  | 'CRIADO'
   | 'AGUARDANDO_PAGAMENTO'
   | 'APROVADO'
-  | 'PAGO'
-  | 'EM_PROCESSAMENTO'
-  | 'ENVIADO'
-  | 'ENTREGUE'
   | 'CANCELADO'
   | 'REEMBOLSADO'
   | 'EXPIRADO';
+
+export type MetodoPagamento = 'CARTAO_CREDITO' | 'PIX' | 'BOLETO' | 'BOLETO_PARCELADO';
+
+export interface DadosCliente {
+  nome: string;
+  email: string;
+  documento: string;
+}
+
+export interface Pedido {
+  id: string;
+  contaId: string;
+  ofertaId: string | null;
+  produtoId: string;
+  cliente: DadosCliente;
+  metodo: MetodoPagamento;
+  status: StatusPedido;
+  valor: number;
+  parcelas: number;
+  referenciaGateway: string | null;
+  criadoEm: string;
+  atualizadoEm: string;
+}
 
 export interface RealizarPedidoRequest {
   ofertaId?: string;
@@ -33,22 +51,4 @@ export interface PagamentoResultado {
   status: string;
   pixQrCode: string | null;
   boletoLinhaDigitavel: string | null;
-}
-
-export interface ItemPedido {
-  produtoId: string;
-  nomeProduto: string;
-  quantidade: number;
-  precoUnitario: number;
-}
-
-export interface Pedido {
-  id: string;
-  compradorEmail: string;
-  status: StatusPedido;
-  itens: ItemPedido[];
-  total: number;
-  contaId: string;
-  criadoEm: string;
-  atualizadoEm: string;
 }
