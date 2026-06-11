@@ -10,14 +10,12 @@ import { CommerceService } from 'api';
 import { Pedido, StatusPedido } from 'models';
 
 const STATUS_LABEL: Record<StatusPedido, string> = {
-  CRIADO: 'Criado',
+  PENDENTE:             'Pendente',
   AGUARDANDO_PAGAMENTO: 'Aguardando pagamento',
-  PAGO: 'Pago',
-  EM_PROCESSAMENTO: 'Em processamento',
-  ENVIADO: 'Enviado',
-  ENTREGUE: 'Entregue',
-  CANCELADO: 'Cancelado',
-  REEMBOLSADO: 'Reembolsado',
+  APROVADO:             'Aprovado',
+  CANCELADO:            'Cancelado',
+  REEMBOLSADO:          'Reembolsado',
+  EXPIRADO:             'Expirado',
 };
 
 @Component({
@@ -34,20 +32,24 @@ const STATUS_LABEL: Record<StatusPedido, string> = {
           <mat-header-cell *matHeaderCellDef>Pedido</mat-header-cell>
           <mat-cell *matCellDef="let p">#{{ p.id | slice:0:8 }}</mat-cell>
         </ng-container>
-        <ng-container matColumnDef="total">
-          <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
-          <mat-cell *matCellDef="let p">{{ p.total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</mat-cell>
+
+        <ng-container matColumnDef="valor">
+          <mat-header-cell *matHeaderCellDef>Valor</mat-header-cell>
+          <mat-cell *matCellDef="let p">{{ p.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</mat-cell>
         </ng-container>
+
         <ng-container matColumnDef="status">
           <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
           <mat-cell *matCellDef="let p">
             <mat-chip [class]="'status-' + p.status.toLowerCase()">{{ statusLabel(p.status) }}</mat-chip>
           </mat-cell>
         </ng-container>
+
         <ng-container matColumnDef="data">
           <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
           <mat-cell *matCellDef="let p">{{ p.criadoEm | date:'dd/MM/yyyy' }}</mat-cell>
         </ng-container>
+
         <ng-container matColumnDef="acoes">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let p">
@@ -71,19 +73,19 @@ const STATUS_LABEL: Record<StatusPedido, string> = {
   `],
 })
 export class PedidosComponent implements OnInit {
-  private auth = inject(AuthService);
+  private auth    = inject(AuthService);
   private commerce = inject(CommerceService);
-  private router = inject(Router);
+  private router  = inject(Router);
 
   pedidos = signal<Pedido[]>([]);
-  colunas = ['id', 'total', 'status', 'data', 'acoes'];
+  colunas = ['id', 'valor', 'status', 'data', 'acoes'];
 
   statusLabel = (status: StatusPedido) => STATUS_LABEL[status] ?? status;
 
   ngOnInit(): void {
     const contaId = this.auth.user()?.contaId;
     if (!contaId) return;
-    this.commerce.listar(contaId).subscribe(res => this.pedidos.set(res.data.content));
+    this.commerce.listar(contaId).subscribe(res => this.pedidos.set(res.data));
   }
 
   verDetalhe(id: string): void {

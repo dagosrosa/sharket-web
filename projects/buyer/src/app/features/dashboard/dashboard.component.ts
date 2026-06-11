@@ -59,8 +59,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     const contaId = this.auth.user()?.contaId;
     if (!contaId) return;
-    this.commerce.listar(contaId, 0, 1).subscribe(
-      res => this.totalPedidos.set(res.data.totalElements)
+
+    this.commerce.listar(contaId).subscribe(
+      res => this.totalPedidos.set(res.data.length)
     );
     this.subscription.listar(contaId, 0, 100).subscribe(res => {
       const ativas = res.data.content.filter(a => a.status === 'ATIVA').length;
