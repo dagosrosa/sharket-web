@@ -53,6 +53,11 @@ import { EditarProdutoDialogComponent } from './editar-produto-dialog.component'
           <button mat-icon-button matTooltip="Copiar link de checkout" (click)="copiarLink(p)">
             <mat-icon>link</mat-icon>
           </button>
+          @if (p.ativo) {
+            <button mat-icon-button matTooltip="Desativar produto" (click)="desativar(p)">
+              <mat-icon>block</mat-icon>
+            </button>
+          }
         </mat-cell>
       </ng-container>
 
@@ -107,6 +112,16 @@ export class ProdutosComponent implements OnInit {
         );
       }
     });
+  }
+
+  desativar(produto: Produto): void {
+    const contaId = this.auth.user()?.contaId;
+    if (!contaId) return;
+    this.catalog.desativar(produto.id, contaId).subscribe(() =>
+      this.produtos.update(lista =>
+        lista.map(p => p.id === produto.id ? { ...p, ativo: false } : p)
+      )
+    );
   }
 
   copiarLink(produto: Produto): void {
