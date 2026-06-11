@@ -10,6 +10,7 @@ import { CatalogService } from 'api';
 import { Oferta } from 'models';
 import { environment } from '../../../environments/environment';
 import { CriarOfertaDialogComponent } from './criar-oferta-dialog.component';
+import { EditarOfertaDialogComponent } from './editar-oferta-dialog.component';
 
 @Component({
   selector: 'app-ofertas',
@@ -51,6 +52,9 @@ import { CriarOfertaDialogComponent } from './criar-oferta-dialog.component';
       <ng-container matColumnDef="acoes">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let o">
+          <button mat-icon-button matTooltip="Editar oferta" (click)="editar(o)">
+            <mat-icon>edit</mat-icon>
+          </button>
           <button mat-icon-button matTooltip="Copiar link de checkout" (click)="copiarLink(o)">
             <mat-icon>link</mat-icon>
           </button>
@@ -106,6 +110,20 @@ export class OfertasComponent implements OnInit {
       if (nova) {
         this.ofertas.update(lista => [nova, ...lista]);
         this.carregarNomesProdutos([nova]);
+      }
+    });
+  }
+
+  editar(oferta: Oferta): void {
+    const ref = this.dialog.open(EditarOfertaDialogComponent, {
+      width: '440px',
+      data: oferta,
+    });
+    ref.afterClosed().subscribe((atualizada: Oferta | undefined) => {
+      if (atualizada) {
+        this.ofertas.update(lista =>
+          lista.map(o => o.id === atualizada.id ? atualizada : o)
+        );
       }
     });
   }
