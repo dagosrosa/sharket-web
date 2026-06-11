@@ -29,6 +29,12 @@ export class CatalogService {
     });
   }
 
+  atualizar(id: string, req: CriarProdutoRequest, contaId: string): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.base()}/${id}`, req, {
+      headers: { 'X-Conta-Id': contaId },
+    });
+  }
+
   desativar(id: string, contaId: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${this.base()}/${id}`, {
       headers: { 'X-Conta-Id': contaId },

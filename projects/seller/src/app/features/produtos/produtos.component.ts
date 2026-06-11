@@ -10,6 +10,7 @@ import { CatalogService } from 'api';
 import { Produto } from 'models';
 import { environment } from '../../../environments/environment';
 import { CriarProdutoDialogComponent } from './criar-produto-dialog.component';
+import { EditarProdutoDialogComponent } from './editar-produto-dialog.component';
 
 @Component({
   selector: 'app-produtos',
@@ -46,9 +47,10 @@ import { CriarProdutoDialogComponent } from './criar-produto-dialog.component';
       <ng-container matColumnDef="acoes">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let p">
-          <button mat-icon-button
-                  matTooltip="Copiar link de checkout"
-                  (click)="copiarLink(p)">
+          <button mat-icon-button matTooltip="Editar produto" (click)="editar(p)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Copiar link de checkout" (click)="copiarLink(p)">
             <mat-icon>link</mat-icon>
           </button>
         </mat-cell>
@@ -90,6 +92,20 @@ export class ProdutosComponent implements OnInit {
     const ref = this.dialog.open(CriarProdutoDialogComponent, { width: '440px' });
     ref.afterClosed().subscribe((novo: Produto | undefined) => {
       if (novo) this.produtos.update(lista => [novo, ...lista]);
+    });
+  }
+
+  editar(produto: Produto): void {
+    const ref = this.dialog.open(EditarProdutoDialogComponent, {
+      width: '440px',
+      data: produto,
+    });
+    ref.afterClosed().subscribe((atualizado: Produto | undefined) => {
+      if (atualizado) {
+        this.produtos.update(lista =>
+          lista.map(p => p.id === atualizado.id ? atualizado : p)
+        );
+      }
     });
   }
 
