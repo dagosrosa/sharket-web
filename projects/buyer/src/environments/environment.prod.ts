@@ -1,4 +1,4 @@
-const GATEWAY = 'https://api.sharket.com';
+const GATEWAY = 'https://gateway-service.yellowmushroom-6c4bca83.brazilsouth.azurecontainerapps.io';
 
 export const environment = {
   production: true,
