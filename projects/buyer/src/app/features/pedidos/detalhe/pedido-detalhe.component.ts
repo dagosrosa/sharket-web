@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
-import { AuthService } from 'auth';
 import { CommerceService } from 'api';
 import { Pedido } from 'models';
 
@@ -102,16 +101,13 @@ import { Pedido } from 'models';
   `],
 })
 export class PedidoDetalheComponent implements OnInit {
-  private route   = inject(ActivatedRoute);
-  private auth    = inject(AuthService);
+  private route    = inject(ActivatedRoute);
   private commerce = inject(CommerceService);
 
   pedido = signal<Pedido | null>(null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
-    const contaId = this.auth.user()?.contaId;
-    if (!contaId) return;
-    this.commerce.buscar(id, contaId).subscribe(res => this.pedido.set(res.data));
+    this.commerce.buscarMinhaCompra(id).subscribe(res => this.pedido.set(res.data));
   }
 }

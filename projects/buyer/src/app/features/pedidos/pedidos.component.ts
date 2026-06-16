@@ -5,7 +5,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CurrencyPipe, DatePipe, SlicePipe } from '@angular/common';
-import { AuthService } from 'auth';
 import { CommerceService } from 'api';
 import { Pedido, StatusPedido } from 'models';
 
@@ -73,7 +72,6 @@ const STATUS_LABEL: Record<StatusPedido, string> = {
   `],
 })
 export class PedidosComponent implements OnInit {
-  private auth    = inject(AuthService);
   private commerce = inject(CommerceService);
   private router  = inject(Router);
 
@@ -83,9 +81,7 @@ export class PedidosComponent implements OnInit {
   statusLabel = (status: StatusPedido) => STATUS_LABEL[status] ?? status;
 
   ngOnInit(): void {
-    const contaId = this.auth.user()?.contaId;
-    if (!contaId) return;
-    this.commerce.listar(contaId).subscribe(res => this.pedidos.set(res.data));
+    this.commerce.listarMinhasCompras().subscribe(res => this.pedidos.set(res.data));
   }
 
   verDetalhe(id: string): void {

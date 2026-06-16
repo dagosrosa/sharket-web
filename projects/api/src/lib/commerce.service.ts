@@ -31,6 +31,14 @@ export class CommerceService {
     });
   }
 
+  listarMinhasCompras(): Observable<ApiResponse<Pedido[]>> {
+    return this.http.get<ApiResponse<Pedido[]>>(`${this.base()}/comprador`);
+  }
+
+  buscarMinhaCompra(id: string): Observable<ApiResponse<Pedido>> {
+    return this.http.get<ApiResponse<Pedido>>(`${this.base()}/comprador/${id}`);
+  }
+
   relatorioResumo(contaId: string): Observable<ApiResponse<ResumoRelatorio>> {
     return this.http.get<ApiResponse<ResumoRelatorio>>(
       `${this.config.commerceUrl}/api/v1/relatorios/resumo`,
