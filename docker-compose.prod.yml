@@ -1,5 +1,8 @@
 version: '3.9'
 
+# Pré-requisito: certificados TLS em /etc/letsencrypt/live/<domínio>/
+# Obter com: certbot certonly --standalone -d app.sharket.com -d conta.sharket.com -d pay.sharket.com -d admin.sharket.com
+
 services:
   seller:
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-sharket}/sharket-seller:latest
@@ -7,7 +10,11 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.seller
     ports:
-      - "4200:80"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt/live/app.sharket.com/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/app.sharket.com/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/health"]
@@ -21,7 +28,11 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.buyer
     ports:
-      - "4201:80"
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - /etc/letsencrypt/live/conta.sharket.com/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/conta.sharket.com/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/health"]
@@ -35,7 +46,11 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.checkout
     ports:
-      - "4202:80"
+      - "8081:80"
+      - "8444:443"
+    volumes:
+      - /etc/letsencrypt/live/pay.sharket.com/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/pay.sharket.com/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/health"]
@@ -49,7 +64,11 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.admin
     ports:
-      - "4203:80"
+      - "8082:80"
+      - "8445:443"
+    volumes:
+      - /etc/letsencrypt/live/admin.sharket.com/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/admin.sharket.com/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/health"]
