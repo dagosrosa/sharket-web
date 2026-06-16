@@ -112,6 +112,14 @@ docker-compose -f docker-compose.prod.yml up -d --build
 docker build -f infra/docker/Dockerfile.seller -t sharket/seller:latest .
 ```
 
+> **SSL/TLS obrigatório em produção.** O nginx de cada app espera certificados em `/etc/nginx/ssl/fullchain.pem` e `privkey.pem`. O `docker-compose.prod.yml` monta os certs do Let's Encrypt automaticamente. Para obtê-los:
+>
+> ```bash
+> certbot certonly --standalone \
+>   -d app.sharket.com -d conta.sharket.com \
+>   -d pay.sharket.com -d admin.sharket.com
+> ```
+
 ---
 
 ## Testes
