@@ -1,12 +1,22 @@
-<div class="login-container">
-  <mat-card class="login-card">
+<div class="cadastro-container">
+  <mat-card class="cadastro-card">
     <mat-card-header>
       <mat-card-title>Sharket</mat-card-title>
-      <mat-card-subtitle>Painel do Vendedor</mat-card-subtitle>
+      <mat-card-subtitle>Criar conta de vendedor</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome completo</mat-label>
+          <input matInput formControlName="nome" type="text" autocomplete="name" />
+          @if (form.controls.nome.hasError('required')) {
+            <mat-error>Nome obrigatório</mat-error>
+          } @else if (form.controls.nome.hasError('minlength')) {
+            <mat-error>Nome muito curto</mat-error>
+          }
+        </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" type="email" autocomplete="email" />
@@ -23,7 +33,7 @@
             matInput
             formControlName="senha"
             [type]="hidePassword() ? 'password' : 'text'"
-            autocomplete="current-password"
+            autocomplete="new-password"
           />
           <button
             mat-icon-button
@@ -35,6 +45,8 @@
           </button>
           @if (form.controls.senha.hasError('required')) {
             <mat-error>Senha obrigatória</mat-error>
+          } @else if (form.controls.senha.hasError('minlength')) {
+            <mat-error>Mínimo 6 caracteres</mat-error>
           }
         </mat-form-field>
 
@@ -47,11 +59,10 @@
           type="submit"
           [disabled]="loading() || form.invalid"
         >
-          {{ loading() ? 'Entrando...' : 'Entrar' }}
+          {{ loading() ? 'Criando conta...' : 'Criar conta' }}
         </button>
 
-        <a routerLink="/recuperar-senha" class="forgot-link">Esqueci minha senha</a>
-        <a routerLink="/cadastro" class="register-link">Criar conta</a>
+        <a routerLink="/login" class="login-link">Já tenho conta</a>
       </form>
     </mat-card-content>
   </mat-card>

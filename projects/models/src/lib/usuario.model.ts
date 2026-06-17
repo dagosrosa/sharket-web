@@ -13,6 +13,12 @@ export interface LoginRequest {
   senha: string;
 }
 
+export interface CadastroRequest {
+  nome: string;
+  email: string;
+  senha: string;
+}
+
 export interface LoginResponse {
   token: string;
   usuario: Usuario;

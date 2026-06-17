@@ -1,4 +1,4 @@
-.login-container {
+.cadastro-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +6,7 @@
   background: var(--mat-sys-surface-container-low);
 }
 
-.login-card {
+.cadastro-card {
   width: 100%;
   max-width: 400px;
   padding: 8px;
@@ -36,22 +36,11 @@
   margin: 0;
 }
 
-.forgot-link {
+.login-link {
   display: block;
   text-align: center;
   margin-top: 8px;
   font-size: 0.875rem;
-  color: var(--mat-sys-primary);
-  text-decoration: none;
-  &:hover { text-decoration: underline; }
-}
-
-.register-link {
-  display: block;
-  text-align: center;
-  margin-top: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
   color: var(--mat-sys-primary);
   text-decoration: none;
   &:hover { text-decoration: underline; }
