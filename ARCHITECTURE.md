@@ -64,10 +64,10 @@ libs/
 
 | App | Propósito | URL prevista | Porta dev |
 |-----|-----------|--------------|-----------|
-| `seller` | Painel do Vendedor / Produtor | `app.sharket.com` | 4200 |
-| `buyer` | Portal do Comprador | `conta.sharket.com` | 4201 |
-| `checkout` | Fluxo de Compra (público) | `pay.sharket.com` | 4202 |
-| `admin` | Administração da plataforma | `admin.sharket.com` | 4203 |
+| `seller` | Painel do Vendedor / Produtor | `app.sharket.com.br` | 4200 |
+| `buyer` | Portal do Comprador | `conta.sharket.com.br` | 4201 |
+| `checkout` | Fluxo de Compra (público) | `pay.sharket.com.br` | 4202 |
+| `admin` | Administração da plataforma | `admin.sharket.com.br` | 4203 |
 
 **Consequências:**
 - (+) Nomes descritivos que comunicam propósito sem contexto adicional
@@ -218,7 +218,7 @@ Desenvolvimento local: `ng serve <app>` sem Docker (hot reload imediato, sem lat
 
 ## ADR-F010 — Pipelines GitHub Actions
 
-**Data:** 2026-06-08
+**Data:** 2026-06-08 | **Atualizado:** 2026-06-17  
 **Status:** Aceito
 
 **Contexto:** Necessidade de CI/CD automatizado no repositório `sharket-web`.
@@ -227,20 +227,22 @@ Desenvolvimento local: `ng serve <app>` sem Docker (hot reload imediato, sem lat
 
 | Workflow | Trigger | Jobs |
 |----------|---------|------|
-| `ci.yml` | Push em qualquer branch / PR para `main` | lint → test → build (jobs paralelos por app) |
-| `deploy.yml` | Push em `main` | build Docker → push registry → deploy |
+| `ci.yml` | Push em qualquer branch / PR para `master` | lint → test → build (jobs paralelos por app) |
+| `deploy.yml` | Push em `master` | build Angular → deploy Azure Static Web Apps |
 
-**Estratégia de paralelismo no CI:**
+**Estratégia de paralelismo no CI e deploy:**
 ```yaml
 strategy:
   matrix:
     app: [seller, buyer, checkout, admin]
 ```
-Cada app compila em paralelo — tempo total = tempo do app mais lento, não a soma.
+Cada app compila e deploya em paralelo — tempo total ≈ tempo do app mais lento.
+
+**Nota sobre o deploy.yml:** originalmente previa Docker + push para GHCR. Em 2026-06-17 migrado para Azure Static Web Apps (ver ADR-F013), que elimina a necessidade de Docker/nginx para o frontend em produção.
 
 **Consequências:**
 - (+) Feedback rápido em PRs (~3-5min com paralelismo)
-- (+) Deploy automático após merge em `main`
+- (+) Deploy automático após merge em `master`
 - (-) No MVP, todos os apps sobem juntos no deploy — path filters por app podem ser adicionados quando ciclos de deploy divergirem
 
 ---
@@ -315,10 +317,69 @@ checkout/v2.1.0
 
 ---
 
+## ADR-F013 — Deploy em Azure Static Web Apps (substituindo Docker + nginx)
+
+**Data:** 2026-06-17  
+**Status:** Aceito
+
+**Contexto:** O plano original (ADR-F009) usava Docker multi-stage + nginx para servir as SPAs Angular em produção, com `docker-compose.prod.yml` e certificados Let's Encrypt. Ao migrar para Azure, o overhead de gerenciar Docker, nginx e TLS manualmente não se justifica para SPAs estáticas.
+
+**Decisão:** Azure Static Web Apps (free tier) como target de deploy para os 4 apps.
+
+| App | Recurso Azure | URL staging | Custom domain |
+|-----|---------------|-------------|---------------|
+| `seller` | `swa-sharket-seller` | `ambitious-glacier-019f93f0f.7.azurestaticapps.net` | `app.sharket.com.br` |
+| `buyer` | `swa-sharket-buyer` | `nice-dune-020663d0f.7.azurestaticapps.net` | `conta.sharket.com.br` |
+| `checkout` | `swa-sharket-checkout` | `lively-sea-0cef2f10f.7.azurestaticapps.net` | `pay.sharket.com.br` |
+| `admin` | `swa-sharket-admin` | `yellow-island-080d01d0f.7.azurestaticapps.net` | `admin.sharket.com.br` |
+
+**Fluxo no `deploy.yml`:**
+1. `ng build <app> --configuration production` → `dist/<app>/browser`
+2. `Azure/static-web-apps-deploy@v1` com deployment token por app
+3. Azure gerencia TLS automaticamente (sem certbot, sem nginx SSL config)
+
+**Nota:** os Dockerfiles em `infra/docker/` e o `docker-compose.prod.yml` foram mantidos para uso local/desenvolvimento. Em produção, apenas o pipeline de CI/CD é usado.
+
+**Consequências:**
+- (+) Sem gestão de servidor, nginx ou certificados — Azure gerencia tudo
+- (+) CDN global incluída no free tier
+- (+) Deploy em segundos (apenas upload de arquivos estáticos, não build de imagem Docker)
+- (+) Free tier cobre o MVP integralmente
+- (-) Funcionalidades SSR (Server-Side Rendering) não disponíveis no free tier
+- (-) `deploy.yml` usa 4 jobs separados (limitação do GitHub Actions: secrets não podem ser referenciados dinamicamente em expressões de matrix)
+
+---
+
+## ADR-F014 — Estratégia de ambiente: `environment.prod.ts` com URL direta (staging)
+
+**Data:** 2026-06-17  
+**Status:** Aceito / A revisar após DNS
+
+**Contexto:** O `environment.prod.ts` de cada app define a URL do API Gateway. Opções: variável de ambiente em build-time (complexo no Angular), `environment.prod.ts` com valor hardcoded, ou injeção via `APP_INITIALIZER` (runtime).
+
+**Decisão:** `environment.prod.ts` com `const GATEWAY` hardcoded. Simples, sem dependência de runtime.
+
+**Estado atual (staging):**
+```typescript
+const GATEWAY = 'https://gateway-service.yellowmushroom-6c4bca83.brazilsouth.azurecontainerapps.io';
+```
+
+**Estado após DNS propagar:**
+```typescript
+const GATEWAY = 'https://api.sharket.com.br';
+```
+Mudança de 1 linha em 4 arquivos + push → pipeline reimplanta automaticamente.
+
+**Consequências:**
+- (+) Sem complexidade de runtime config
+- (-) Mudança de URL requer push + pipeline (~3min de deploy)
+
+---
+
 ## Próximas decisões pendentes
 
-- [ ] ADR-F013 — Internacionalização (i18n): Angular i18n nativo vs ngx-translate
-- [ ] ADR-F014 — Testes E2E: Cypress vs Playwright
-- [ ] ADR-F015 — API Gateway e migração do JWT para httpOnly cookies
-- [ ] ADR-F016 — Progressive Web App (PWA): manifesto + service worker
-- [ ] ADR-F017 — Estratégia de testes de acessibilidade (WCAG 2.1 AA)
+- [ ] ADR-F015 — Internacionalização (i18n): Angular i18n nativo vs ngx-translate
+- [ ] ADR-F016 — Testes E2E: Cypress vs Playwright
+- [ ] ADR-F017 — API Gateway e migração do JWT para httpOnly cookies
+- [ ] ADR-F018 — Progressive Web App (PWA): manifesto + service worker
+- [ ] ADR-F019 — Estratégia de testes de acessibilidade (WCAG 2.1 AA)
