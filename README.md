@@ -102,7 +102,64 @@ npm run build:all
 
 ---
 
-## Docker (produção)
+## Deploy em produção — Azure Static Web Apps (ambiente ativo)
+
+O deploy é automatizado via GitHub Actions a cada push em `master` (`.github/workflows/deploy.yml`).
+
+### Fluxo do pipeline
+
+1. **Build** (paralelo, 4 apps) — `ng build <app> --configuration production` → artifact `dist/<app>/browser`
+2. **Deploy** (4 jobs independentes) — `Azure/static-web-apps-deploy@v1` com token por app
+
+### URLs de staging
+
+| App | URL atual (staging) | Custom domain (pendente DNS) |
+|-----|--------------------|-----------------------------|
+| `seller` | `https://ambitious-glacier-019f93f0f.7.azurestaticapps.net` | `app.sharket.com.br` |
+| `buyer` | `https://nice-dune-020663d0f.7.azurestaticapps.net` | `conta.sharket.com.br` |
+| `checkout` | `https://lively-sea-0cef2f10f.7.azurestaticapps.net` | `pay.sharket.com.br` |
+| `admin` | `https://yellow-island-080d01d0f.7.azurestaticapps.net` | `admin.sharket.com.br` |
+
+### Ambiente de produção (`environment.prod.ts`)
+
+Todos os 4 apps apontam para o gateway:
+```
+GATEWAY = https://gateway-service.yellowmushroom-6c4bca83.brazilsouth.azurecontainerapps.io
+```
+Após configurar `api.sharket.com.br`, atualizar para `https://api.sharket.com.br` e fazer push.
+
+### Secrets necessários no GitHub (`dagosrosa/sharket-web`)
+
+| Secret | App |
+|--------|-----|
+| `SWA_TOKEN_SELLER` | swa-sharket-seller |
+| `SWA_TOKEN_BUYER` | swa-sharket-buyer |
+| `SWA_TOKEN_CHECKOUT` | swa-sharket-checkout |
+| `SWA_TOKEN_ADMIN` | swa-sharket-admin |
+
+### Vincular custom domains (após DNS propagar)
+
+```powershell
+$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
+
+az staticwebapp hostname set --name swa-sharket-seller `
+  --resource-group rg-sharket --hostname app.sharket.com.br
+
+az staticwebapp hostname set --name swa-sharket-buyer `
+  --resource-group rg-sharket --hostname conta.sharket.com.br
+
+az staticwebapp hostname set --name swa-sharket-checkout `
+  --resource-group rg-sharket --hostname pay.sharket.com.br
+
+az staticwebapp hostname set --name swa-sharket-admin `
+  --resource-group rg-sharket --hostname admin.sharket.com.br
+```
+
+SSL é provisionado automaticamente pelo Azure após vinculação.
+
+---
+
+## Docker (uso local / desenvolvimento)
 
 ```bash
 # Build e start de todos os apps
@@ -112,12 +169,12 @@ docker-compose -f docker-compose.prod.yml up -d --build
 docker build -f infra/docker/Dockerfile.seller -t sharket/seller:latest .
 ```
 
-> **SSL/TLS obrigatório em produção.** O nginx de cada app espera certificados em `/etc/nginx/ssl/fullchain.pem` e `privkey.pem`. O `docker-compose.prod.yml` monta os certs do Let's Encrypt automaticamente. Para obtê-los:
+> **SSL/TLS obrigatório se usar nginx local.** O nginx de cada app espera certificados em `/etc/nginx/ssl/fullchain.pem` e `privkey.pem`. O `docker-compose.prod.yml` monta os certs do Let's Encrypt automaticamente. Para obtê-los:
 >
 > ```bash
 > certbot certonly --standalone \
->   -d app.sharket.com -d conta.sharket.com \
->   -d pay.sharket.com -d admin.sharket.com
+>   -d app.sharket.com.br -d conta.sharket.com.br \
+>   -d pay.sharket.com.br -d admin.sharket.com.br
 > ```
 
 ---
