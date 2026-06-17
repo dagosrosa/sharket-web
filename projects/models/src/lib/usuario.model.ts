@@ -1,4 +1,4 @@
-export type Perfil = 'MASTER' | 'ADMIN' | 'VENDEDOR' | 'SUPORTE';
+export type Perfil = 'MASTER' | 'KINGPIN' | 'ADMINISTRATOR' | 'PARTNER' | 'SUPPORT_PRODUCER' | 'SUPPORT_FINANCIAL';
 
 export interface Usuario {
   id: string;
@@ -21,5 +21,9 @@ export interface CadastroRequest {
 
 export interface LoginResponse {
   token: string;
-  usuario: Usuario;
+  tipo: string;
+  contaId: string;
+  nome: string;
+  email: string;
+  role: Perfil;
 }

@@ -17,10 +17,17 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this._token());
 
   setSession(response: LoginResponse): void {
+    const usuario: Usuario = {
+      id: response.contaId,
+      nome: response.nome,
+      email: response.email,
+      perfil: response.role,
+      contaId: response.contaId,
+    };
     localStorage.setItem(TOKEN_KEY, response.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(response.usuario));
+    localStorage.setItem(USER_KEY, JSON.stringify(usuario));
     this._token.set(response.token);
-    this._user.set(response.usuario);
+    this._user.set(usuario);
   }
 
   logout(): void {
