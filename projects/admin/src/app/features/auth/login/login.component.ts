@@ -80,8 +80,8 @@ export class LoginComponent {
     const { email, senha } = this.form.getRawValue();
     this.iam.login({ email, senha }).subscribe({
       next: res => {
-        const perfil = res.data.usuario.perfil;
-        if (perfil !== 'MASTER' && perfil !== 'ADMIN') {
+        const perfil = res.data.role;
+        if (perfil !== 'MASTER' && perfil !== 'KINGPIN' && perfil !== 'ADMINISTRATOR') {
           this.error.set('Acesso negado. Perfil sem permissão de administrador.');
           this.loading.set(false);
           return;
