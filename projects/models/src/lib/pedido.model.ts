@@ -25,6 +25,9 @@ export interface Pedido {
   valor: number;
   parcelas: number;
   referenciaGateway: string | null;
+  tipoProduto: string;
+  urlDownload: string | null;
+  codigoRastreio: string | null;
   criadoEm: string;
   atualizadoEm: string;
 }
@@ -38,6 +41,8 @@ export interface RealizarPedidoRequest {
   metodo: string;
   valor: number;
   parcelas: number;
+  tipoProduto: string;
+  urlDownload?: string;
 }
 
 export interface PedidoCriadoResultado {

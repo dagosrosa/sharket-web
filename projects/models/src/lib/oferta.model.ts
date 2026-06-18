@@ -21,6 +21,8 @@ export interface OfertaPublica {
   valor: number;
   tipo: TipoOferta;
   maxParcelas: number;
+  tipoProduto: string;
+  urlDownload: string | null;
 }
 
 export interface CriarOfertaRequest {

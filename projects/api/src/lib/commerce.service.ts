@@ -31,6 +31,12 @@ export class CommerceService {
     });
   }
 
+  informarRastreio(id: string, contaId: string, codigoRastreio: string): Observable<ApiResponse<void>> {
+    return this.http.patch<ApiResponse<void>>(`${this.base()}/${id}/rastreio`, { codigoRastreio }, {
+      headers: { 'X-Conta-Id': contaId },
+    });
+  }
+
   listarMinhasCompras(): Observable<ApiResponse<Pedido[]>> {
     return this.http.get<ApiResponse<Pedido[]>>(`${this.base()}/comprador`);
   }

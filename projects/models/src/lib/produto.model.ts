@@ -9,6 +9,7 @@ export interface Produto {
   tipo: TipoProduto;
   preco: number;
   periodoReembolsoDias: number;
+  urlDownload: string | null;
   ativo: boolean;
   criadoEm: string;
   atualizadoEm: string;
@@ -21,4 +22,5 @@ export interface CriarProdutoRequest {
   tipo: TipoProduto;
   preco: number;
   periodoReembolsoDias?: number;
+  urlDownload?: string;
 }
