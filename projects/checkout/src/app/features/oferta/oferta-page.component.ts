@@ -6,6 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyPipe } from '@angular/common';
 import { CatalogService } from 'api';
 import { CheckoutStateService } from '../../services/checkout-state.service';
+import { PixelService } from '../../services/pixel.service';
 import { OfertaPublica, Produto } from 'models';
 
 @Component({
@@ -57,6 +58,7 @@ export class OfertaPageComponent implements OnInit {
   private route   = inject(ActivatedRoute);
   private router  = inject(Router);
   private catalog = inject(CatalogService);
+  private pixel   = inject(PixelService);
   state = inject(CheckoutStateService);
 
   oferta  = signal<OfertaPublica | null>(null);
@@ -75,6 +77,13 @@ export class OfertaPageComponent implements OnInit {
           logoUrl: res.data.logoUrl,
           corPrimaria: res.data.corPrimaria,
         });
+        this.state.pixelConfig.set({
+          facebookPixelId: res.data.facebookPixelId,
+          googleAdsId:     res.data.googleAdsId,
+          tiktokPixelId:   res.data.tiktokPixelId,
+        });
+        this.pixel.init(this.state.pixelConfig());
+        this.pixel.track('PageView');
         this.state.produto.set({
           id: res.data.produtoId,
           nome: res.data.nomeProduto,
@@ -87,6 +96,8 @@ export class OfertaPageComponent implements OnInit {
   }
 
   comprar(): void {
+    const preco = this.oferta()?.valor;
+    this.pixel.track('InitiateCheckout', { value: preco, currency: 'BRL' });
     this.router.navigate(['/checkout-oferta']);
   }
 }

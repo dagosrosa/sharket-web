@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
 import { CheckoutStateService } from '../../services/checkout-state.service';
+import { PixelService } from '../../services/pixel.service';
 import QRCode from 'qrcode';
 
 @Component({
@@ -119,11 +120,14 @@ import QRCode from 'qrcode';
 })
 export class SucessoComponent implements OnInit {
   state    = inject(CheckoutStateService);
+  private pixel = inject(PixelService);
   qrDataUrl = signal('');
   copiado   = signal('');
 
   ngOnInit(): void {
-    const pag = this.state.pagamentoResultado();
+    const pag   = this.state.pagamentoResultado();
+    const preco = this.state.produto()?.preco;
+    this.pixel.track('Purchase', { value: preco, currency: 'BRL' });
     if (pag?.pixQrCode) {
       QRCode.toDataURL(pag.pixQrCode, { width: 220, margin: 1, color: { dark: '#000000', light: '#ffffff' } })
         .then(url => this.qrDataUrl.set(url));
