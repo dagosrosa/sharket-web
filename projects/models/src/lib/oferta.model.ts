@@ -23,6 +23,21 @@ export interface OfertaPublica {
   maxParcelas: number;
   tipoProduto: string;
   urlDownload: string | null;
+  nomeExibicao: string | null;
+  logoUrl: string | null;
+  corPrimaria: string | null;
+}
+
+export interface CheckoutConfig {
+  nomeExibicao: string | null;
+  logoUrl: string | null;
+  corPrimaria: string | null;
+}
+
+export interface SalvarCheckoutConfigRequest {
+  nomeExibicao?: string;
+  logoUrl?: string;
+  corPrimaria?: string;
 }
 
 export interface CriarOfertaRequest {
