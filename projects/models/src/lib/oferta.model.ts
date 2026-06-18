@@ -26,6 +26,9 @@ export interface OfertaPublica {
   nomeExibicao: string | null;
   logoUrl: string | null;
   corPrimaria: string | null;
+  facebookPixelId: string | null;
+  googleAdsId: string | null;
+  tiktokPixelId: string | null;
 }
 
 export interface CheckoutConfig {
@@ -38,6 +41,18 @@ export interface SalvarCheckoutConfigRequest {
   nomeExibicao?: string;
   logoUrl?: string;
   corPrimaria?: string;
+}
+
+export interface PixelConfig {
+  facebookPixelId: string | null;
+  googleAdsId: string | null;
+  tiktokPixelId: string | null;
+}
+
+export interface SalvarPixelConfigRequest {
+  facebookPixelId: string;
+  googleAdsId: string;
+  tiktokPixelId: string;
 }
 
 export interface CriarOfertaRequest {

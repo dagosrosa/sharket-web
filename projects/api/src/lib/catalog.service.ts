@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse, CheckoutConfig, CriarOfertaRequest, CriarProdutoRequest, Oferta, OfertaPublica, Produto, SalvarCheckoutConfigRequest } from 'models';
+import { ApiResponse, CheckoutConfig, CriarOfertaRequest, CriarProdutoRequest, Oferta, OfertaPublica, PixelConfig, Produto, SalvarCheckoutConfigRequest, SalvarPixelConfigRequest } from 'models';
 import { SHARKET_API_CONFIG } from './api.config';
 
 @Injectable({ providedIn: 'root' })
@@ -82,6 +82,21 @@ export class CatalogService {
   saveCheckoutConfig(req: SalvarCheckoutConfigRequest, contaId: string): Observable<ApiResponse<CheckoutConfig>> {
     return this.http.put<ApiResponse<CheckoutConfig>>(
       `${this.config.catalogUrl}/api/v1/checkout-config`,
+      req,
+      { headers: { 'X-Conta-Id': contaId } }
+    );
+  }
+
+  getPixelConfig(contaId: string): Observable<ApiResponse<PixelConfig>> {
+    return this.http.get<ApiResponse<PixelConfig>>(
+      `${this.config.catalogUrl}/api/v1/pixel-config`,
+      { headers: { 'X-Conta-Id': contaId } }
+    );
+  }
+
+  savePixelConfig(req: SalvarPixelConfigRequest, contaId: string): Observable<ApiResponse<PixelConfig>> {
+    return this.http.put<ApiResponse<PixelConfig>>(
+      `${this.config.catalogUrl}/api/v1/pixel-config`,
       req,
       { headers: { 'X-Conta-Id': contaId } }
     );
