@@ -87,6 +87,39 @@ import { Pedido } from 'models';
           </mat-card-content>
         </mat-card>
 
+        @if (p.tipoProduto !== 'FISICO' && p.urlDownload) {
+          <mat-card class="entrega-card">
+            <mat-card-header>
+              <mat-icon mat-card-avatar>download</mat-icon>
+              <mat-card-title>Download do Produto</mat-card-title>
+              <mat-card-subtitle>Seu acesso esta disponivel</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+              <a mat-flat-button color="primary" [href]="p.urlDownload" target="_blank">
+                <mat-icon>download</mat-icon>
+                Baixar agora
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        }
+
+        @if (p.tipoProduto === 'FISICO') {
+          <mat-card>
+            <mat-card-header><mat-card-title>Envio</mat-card-title></mat-card-header>
+            <mat-card-content class="rows">
+              @if (p.codigoRastreio) {
+                <div class="row">
+                  <span class="label">Codigo de rastreio</span>
+                  <span class="mono rastreio">{{ p.codigoRastreio }}</span>
+                </div>
+                <p class="rastreio-hint">Use este codigo para rastrear seu pedido nos Correios ou na transportadora informada pelo vendedor.</p>
+              } @else {
+                <p class="rastreio-hint">Seu pedido ainda nao foi despachado. Voce recebera um email quando o codigo de rastreio estiver disponivel.</p>
+              }
+            </mat-card-content>
+          </mat-card>
+        }
+
       </div>
     }
   `,
@@ -97,6 +130,9 @@ import { Pedido } from 'models';
     .row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
     .label { color: var(--mat-sys-on-surface-variant); font-size: 0.8rem; }
     .mono { font-family: monospace; font-size: 0.8rem; }
+    .rastreio { font-size: 1rem; font-weight: 600; letter-spacing: 0.05em; }
+    .rastreio-hint { font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); margin: 4px 0 0; }
+    .entrega-card mat-card-actions { padding: 16px; a { width: 100%; justify-content: center; } }
     @media (min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
   `],
 })
