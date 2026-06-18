@@ -10,10 +10,10 @@ Repositório do backend: [`sharket`](https://github.com/dagosrosa/sharket)
 
 | App | Propósito | Porta dev | URL produção |
 |-----|-----------|-----------|--------------|
-| `seller` | Painel do Vendedor / Produtor | 4200 | `app.sharket.com` |
-| `buyer` | Portal do Comprador | 4201 | `conta.sharket.com` |
-| `checkout` | Fluxo de Compra (público) | 4202 | `pay.sharket.com` |
-| `admin` | Administração da plataforma | 4203 | `admin.sharket.com` |
+| `seller` | Painel do Vendedor / Produtor | 4200 | `https://app.sharket.com.br` |
+| `buyer` | Portal do Comprador | 4201 | `https://conta.sharket.com.br` |
+| `checkout` | Fluxo de Compra (público) | 4202 | `https://pay.sharket.com.br` |
+| `admin` | Administração da plataforma | 4203 | `https://admin.sharket.com.br` |
 
 ---
 
@@ -111,22 +111,22 @@ O deploy é automatizado via GitHub Actions a cada push em `master` (`.github/wo
 1. **Build** (paralelo, 4 apps) — `ng build <app> --configuration production` → artifact `dist/<app>/browser`
 2. **Deploy** (4 jobs independentes) — `Azure/static-web-apps-deploy@v1` com token por app
 
-### URLs de staging
+### URLs de produção (custom domains — ativos desde 2026-06-18)
 
-| App | URL atual (staging) | Custom domain (pendente DNS) |
-|-----|--------------------|-----------------------------|
-| `seller` | `https://ambitious-glacier-019f93f0f.7.azurestaticapps.net` | `app.sharket.com.br` |
-| `buyer` | `https://nice-dune-020663d0f.7.azurestaticapps.net` | `conta.sharket.com.br` |
-| `checkout` | `https://lively-sea-0cef2f10f.7.azurestaticapps.net` | `pay.sharket.com.br` |
-| `admin` | `https://yellow-island-080d01d0f.7.azurestaticapps.net` | `admin.sharket.com.br` |
+| App | URL custom | URL default (backup) |
+|-----|-----------|---------------------|
+| `seller` | `https://app.sharket.com.br` ✅ | `https://ambitious-glacier-019f93f0f.7.azurestaticapps.net` |
+| `buyer` | `https://conta.sharket.com.br` ✅ | `https://nice-dune-020663d0f.7.azurestaticapps.net` |
+| `checkout` | `https://pay.sharket.com.br` ✅ | `https://lively-sea-0cef2f10f.7.azurestaticapps.net` |
+| `admin` | `https://admin.sharket.com.br` ✅ | `https://yellow-island-080d01d0f.7.azurestaticapps.net` |
 
 ### Ambiente de produção (`environment.prod.ts`)
 
-Todos os 4 apps apontam para o gateway:
+Todos os 4 apps apontam para o gateway via custom domain:
 ```
-GATEWAY = https://gateway-service.yellowmushroom-6c4bca83.brazilsouth.azurecontainerapps.io
+GATEWAY = https://api.sharket.com.br
 ```
-Após configurar `api.sharket.com.br`, atualizar para `https://api.sharket.com.br` e fazer push.
+O `checkoutUrl` do seller aponta para `https://pay.sharket.com.br`.
 
 ### Secrets necessários no GitHub (`dagosrosa/sharket-web`)
 
@@ -136,26 +136,6 @@ Após configurar `api.sharket.com.br`, atualizar para `https://api.sharket.com.b
 | `SWA_TOKEN_BUYER` | swa-sharket-buyer |
 | `SWA_TOKEN_CHECKOUT` | swa-sharket-checkout |
 | `SWA_TOKEN_ADMIN` | swa-sharket-admin |
-
-### Vincular custom domains (após DNS propagar)
-
-```powershell
-$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH","User")
-
-az staticwebapp hostname set --name swa-sharket-seller `
-  --resource-group rg-sharket --hostname app.sharket.com.br
-
-az staticwebapp hostname set --name swa-sharket-buyer `
-  --resource-group rg-sharket --hostname conta.sharket.com.br
-
-az staticwebapp hostname set --name swa-sharket-checkout `
-  --resource-group rg-sharket --hostname pay.sharket.com.br
-
-az staticwebapp hostname set --name swa-sharket-admin `
-  --resource-group rg-sharket --hostname admin.sharket.com.br
-```
-
-SSL é provisionado automaticamente pelo Azure após vinculação.
 
 ---
 
