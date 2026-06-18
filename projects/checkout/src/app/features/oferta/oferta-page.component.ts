@@ -64,6 +64,8 @@ export class OfertaPageComponent implements OnInit {
       next: res => {
         this.oferta.set(res.data);
         this.state.ofertaId.set(res.data.id);
+        this.state.tipoProduto.set(res.data.tipoProduto);
+        this.state.urlDownload.set(res.data.urlDownload);
         this.state.produto.set({
           id: res.data.produtoId,
           nome: res.data.nomeProduto,

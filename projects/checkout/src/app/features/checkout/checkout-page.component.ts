@@ -90,6 +90,8 @@ export class CheckoutPageComponent implements OnInit {
       metodo,
       valor: produto.preco,
       parcelas: 1,
+      tipoProduto: this.state.tipoProduto(),
+      urlDownload: this.state.urlDownload() ?? undefined,
     }, contaId).pipe(
       switchMap(pedidoRes => this.payment.processar({
         pedidoId: pedidoRes.data.pedidoId,
