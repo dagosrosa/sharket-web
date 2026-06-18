@@ -238,6 +238,18 @@ chore(infra): corrigir rota de autenticação no seller
 
 ---
 
+## Features implementadas (Opção B)
+
+| Feature | Seller | Checkout | Buyer |
+|---------|--------|----------|-------|
+| Tipo de produto + URL de download | ✅ | ✅ | ✅ |
+| Entrega pós-venda automática (email) | ✅ | — | ✅ |
+| Informar rastreio (físico) | ✅ | — | ✅ |
+| Checkout customizável (logo, cor, nome) | ✅ (`/app/aparencia`) | ✅ (branding dinâmico) | — |
+| Pixel tracking (Facebook, Google, TikTok) | ✅ (`/app/pixels`) | ✅ (PageView/InitiateCheckout/Purchase) | — |
+
+---
+
 ## Governança
 
 Decisões arquiteturais: [ARCHITECTURE.md](ARCHITECTURE.md)
