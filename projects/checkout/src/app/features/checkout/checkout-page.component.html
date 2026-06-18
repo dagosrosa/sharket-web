@@ -1,6 +1,10 @@
 <div class="checkout-container">
   <div class="checkout-header">
-    <span class="brand">Sharket</span>
+    @if (state.branding()?.logoUrl) {
+      <img [src]="state.branding()!.logoUrl!" class="seller-logo" alt="Logo" />
+    } @else {
+      <span class="brand">{{ state.branding()?.nomeExibicao || 'Sharket' }}</span>
+    }
     @if (state.produto(); as p) {
       <span class="produto-nome">{{ p.nome }}</span>
       <span class="produto-preco">{{ p.preco | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>

@@ -12,6 +12,7 @@
   margin-bottom: 32px;
 
   .brand { font-size: 1.25rem; font-weight: 700; color: var(--mat-sys-primary); }
+  .seller-logo { max-height: 48px; max-width: 160px; object-fit: contain; }
   .produto-nome { color: var(--mat-sys-on-surface-variant); flex: 1; }
   .produto-preco { font-size: 1.125rem; font-weight: 600; color: var(--mat-sys-on-surface); }
 }

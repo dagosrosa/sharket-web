@@ -20,7 +20,10 @@ import { OfertaPublica, Produto } from 'models';
       } @else if (oferta(); as o) {
         <mat-card class="oferta-card">
           <mat-card-header>
-            <mat-card-subtitle>{{ o.nomeProduto }}</mat-card-subtitle>
+            @if (state.branding()?.logoUrl) {
+              <img [src]="state.branding()!.logoUrl!" class="seller-logo" alt="Logo" />
+            }
+            <mat-card-subtitle>{{ state.branding()?.nomeExibicao || o.nomeProduto }}</mat-card-subtitle>
             <mat-card-title>{{ o.nomeOferta }}</mat-card-title>
           </mat-card-header>
           <mat-card-content>
@@ -42,6 +45,7 @@ import { OfertaPublica, Produto } from 'models';
     .page { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 16px; background: var(--mat-sys-surface-container-low); }
     .brand { font-size: 1.5rem; font-weight: 700; color: var(--mat-sys-primary); margin-bottom: 40px; }
     .oferta-card { width: 100%; max-width: 480px; }
+    .seller-logo { max-height: 56px; max-width: 180px; object-fit: contain; margin-bottom: 8px; }
     .preco { font-size: 2rem; font-weight: 600; color: var(--mat-sys-primary); margin: 16px 0 4px; }
     .parcelas { font-size: 0.9rem; color: var(--mat-sys-on-surface-variant); margin: 0; }
     mat-card-actions { padding: 16px; button { width: 100%; } }
@@ -53,7 +57,7 @@ export class OfertaPageComponent implements OnInit {
   private route   = inject(ActivatedRoute);
   private router  = inject(Router);
   private catalog = inject(CatalogService);
-  private state   = inject(CheckoutStateService);
+  state = inject(CheckoutStateService);
 
   oferta  = signal<OfertaPublica | null>(null);
   loading = signal(true);
@@ -66,6 +70,11 @@ export class OfertaPageComponent implements OnInit {
         this.state.ofertaId.set(res.data.id);
         this.state.tipoProduto.set(res.data.tipoProduto);
         this.state.urlDownload.set(res.data.urlDownload);
+        this.state.branding.set({
+          nomeExibicao: res.data.nomeExibicao,
+          logoUrl: res.data.logoUrl,
+          corPrimaria: res.data.corPrimaria,
+        });
         this.state.produto.set({
           id: res.data.produtoId,
           nome: res.data.nomeProduto,
