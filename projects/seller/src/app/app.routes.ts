@@ -70,6 +70,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/aparencia/aparencia.component').then(m => m.AparenciaComponent),
       },
+      {
+        path: 'pixels',
+        loadComponent: () =>
+          import('./features/pixels/pixels.component').then(m => m.PixelsComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'app/dashboard' },
