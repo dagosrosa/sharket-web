@@ -73,6 +73,14 @@ const TIPOS: { value: TipoProduto; label: string }[] = [
           <textarea matInput formControlName="descricao" rows="3"></textarea>
         </mat-form-field>
 
+        @if (form.controls.tipo.value !== 'FISICO') {
+          <mat-form-field appearance="outline">
+            <mat-label>URL de Download (opcional)</mat-label>
+            <input matInput formControlName="urlDownload" placeholder="https://drive.google.com/..." />
+            <mat-hint>Link do arquivo enviado ao comprador após a compra</mat-hint>
+          </mat-form-field>
+        }
+
         @if (erro()) {
           <p class="erro">{{ erro() }}</p>
         }
@@ -102,10 +110,11 @@ export class CriarProdutoDialogComponent {
   erro = signal('');
 
   form = new FormGroup({
-    nome:      new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    tipo:      new FormControl<TipoProduto | null>(null, [Validators.required]),
-    preco:     new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-    descricao: new FormControl('', { nonNullable: true }),
+    nome:        new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    tipo:        new FormControl<TipoProduto | null>(null, [Validators.required]),
+    preco:       new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
+    descricao:   new FormControl('', { nonNullable: true }),
+    urlDownload: new FormControl('', { nonNullable: true }),
   });
 
   salvar(): void {
@@ -113,7 +122,7 @@ export class CriarProdutoDialogComponent {
     const contaId = this.auth.user()?.contaId;
     if (!contaId) return;
 
-    const { nome, tipo, preco, descricao } = this.form.getRawValue();
+    const { nome, tipo, preco, descricao, urlDownload } = this.form.getRawValue();
     this.loading.set(true);
     this.erro.set('');
 
@@ -123,6 +132,7 @@ export class CriarProdutoDialogComponent {
       preco: preco!,
       descricao: descricao || undefined,
       periodoReembolsoDias: 7,
+      urlDownload: urlDownload || undefined,
     }, contaId).subscribe({
       next: res => this.dialogRef.close(res.data),
       error: () => {

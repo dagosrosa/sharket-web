@@ -67,6 +67,14 @@ const TIPOS: { value: TipoProduto; label: string }[] = [
           <textarea matInput formControlName="descricao" rows="3"></textarea>
         </mat-form-field>
 
+        @if (form.controls.tipo.value !== 'FISICO') {
+          <mat-form-field appearance="outline">
+            <mat-label>URL de Download (opcional)</mat-label>
+            <input matInput formControlName="urlDownload" placeholder="https://drive.google.com/..." />
+            <mat-hint>Link do arquivo enviado ao comprador após a compra</mat-hint>
+          </mat-form-field>
+        }
+
         @if (erro()) {
           <p class="erro">{{ erro() }}</p>
         }
@@ -97,10 +105,11 @@ export class EditarProdutoDialogComponent {
   erro    = signal('');
 
   form = new FormGroup({
-    nome:      new FormControl(this.produto.nome,      { nonNullable: true, validators: [Validators.required] }),
-    tipo:      new FormControl<TipoProduto>(this.produto.tipo, { nonNullable: true, validators: [Validators.required] }),
-    preco:     new FormControl<number>(this.produto.preco,    { nonNullable: true, validators: [Validators.required, Validators.min(0.01)] }),
-    descricao: new FormControl(this.produto.descricao ?? '', { nonNullable: true }),
+    nome:        new FormControl(this.produto.nome,      { nonNullable: true, validators: [Validators.required] }),
+    tipo:        new FormControl<TipoProduto>(this.produto.tipo, { nonNullable: true, validators: [Validators.required] }),
+    preco:       new FormControl<number>(this.produto.preco,    { nonNullable: true, validators: [Validators.required, Validators.min(0.01)] }),
+    descricao:   new FormControl(this.produto.descricao ?? '', { nonNullable: true }),
+    urlDownload: new FormControl(this.produto.urlDownload ?? '', { nonNullable: true }),
   });
 
   salvar(): void {
@@ -108,7 +117,7 @@ export class EditarProdutoDialogComponent {
     const contaId = this.auth.user()?.contaId;
     if (!contaId) return;
 
-    const { nome, tipo, preco, descricao } = this.form.getRawValue();
+    const { nome, tipo, preco, descricao, urlDownload } = this.form.getRawValue();
     this.loading.set(true);
     this.erro.set('');
 
@@ -118,8 +127,9 @@ export class EditarProdutoDialogComponent {
       preco,
       descricao: descricao || undefined,
       periodoReembolsoDias: this.produto.periodoReembolsoDias,
+      urlDownload: urlDownload || undefined,
     }, contaId).subscribe({
-      next: () => this.ref.close({ ...this.produto, nome, tipo, preco, descricao }),
+      next: () => this.ref.close({ ...this.produto, nome, tipo, preco, descricao, urlDownload }),
       error: () => {
         this.erro.set('Nao foi possivel atualizar o produto. Tente novamente.');
         this.loading.set(false);
