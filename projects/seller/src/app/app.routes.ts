@@ -65,6 +65,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/ofertas/ofertas.component').then(m => m.OfertasComponent),
       },
+      {
+        path: 'aparencia',
+        loadComponent: () =>
+          import('./features/aparencia/aparencia.component').then(m => m.AparenciaComponent),
+      },
     ],
   },
   { path: '**', redirectTo: 'app/dashboard' },
